@@ -15,7 +15,6 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	final int originalTileSize = 16; // 16x16 tile
 	final int scale = 3;
-	
 	final int tileSize = originalTileSize * scale; // 48x48 tile
 	final int maxScreenCol = 16; 
 	final int maxScreenRow = 12;
@@ -48,42 +47,89 @@ public class GamePanel extends JPanel implements Runnable{
 		gameThread.start();
 	}
 
-	@Override
-	public void run() {	
-		double drawInterval = 1000000000/FPS; // 0.01666 seconds
-		double nextDrawTime = System.nanoTime() + drawInterval;
+	
+//	public void run() {	
+//		double drawInterval = 1000000000/FPS; // 0.01666 seconds
+//		double nextDrawTime = System.nanoTime() + drawInterval;
+//		
+//		
+// 		while(gameThread != null) {
+//			
+//			
+//			// 1 UPDATE: update information such as character positions
+//			update();
+//			
+//			// 2 DRAW: draw the screen with the updated information
+//			repaint();
+//			
+//			
+//			try {
+//				double remainingTime = nextDrawTime - System.nanoTime();
+//				remainingTime = remainingTime/1000000;
+//				
+//				if(remainingTime < 0) {
+//					remainingTime = 0;
+//				}
+//				
+//				Thread.sleep((long) remainingTime);
+//				System.out.println(remainingTime);
+//				
+//				nextDrawTime += drawInterval;
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+////		As long as this gameThread exits, 
+////		it repeats the process that is written inside of these brackets
+//	}
+	public void run() {
+		
+		double drawInterval = 1000000000/FPS;
+		double delta = 0;
+		long lastTime = System.nanoTime();
+		long currentTime;
 		
 		
- 		while(gameThread != null) {
+		long timer = 0;
+		int drawCount = 0;
+		
+		while (gameThread != null) {
 			
+			currentTime = System.nanoTime();
+			delta += (currentTime - lastTime) / drawInterval;
+			timer += (currentTime - lastTime);
+			lastTime = currentTime;
 			
-			// 1 UPDATE: update information such as character positions
-			update();
-			
-			// 2 DRAW: draw the screen with the updated information
-			repaint();
-			
-			
-			try {
-				double remainingTime = nextDrawTime - System.nanoTime();
-				remainingTime = remainingTime/1000000;
+			if (delta >= 1) {
 				
-				if(remainingTime < 0) {
-					remainingTime = 0;
-				}
-				
-				Thread.sleep((long) remainingTime);
-				System.out.println(remainingTime);
-				
-				nextDrawTime += drawInterval;
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				update();
+				repaint();
+				delta--;
+				drawCount++;
 			}
+			
+			if(timer >= 1000000000) {
+				System.out.println("FPS: " + drawCount);
+				drawCount = 0;
+				timer = 0;
+			}
+//			System.out.println("current time :" + currentTime);
+//			System.out.println("last time :" + lastTime);
+//			System.out.println("delta :" + delta);
 		}
-//		As long as this gameThread exits, 
-//		it repeats the process that is written inside of these brackets
 	}
+	
+	/*
+	 * The purpose of this loop is to maintain a consistent frame rate (FPS) for the
+	 * game by regulating the speed at which the game logic updates and the graphics
+	 * are redrawn. The delta variable ensures that the game logic is updated only
+	 * when the desired frame rate is achieved. The update() method is responsible
+	 * for updating the game state (e.g., moving objects, checking for collisions),
+	 * and the repaint() method is responsible for redrawing the graphics based on
+	 * the updated state.
+	 */
+	
 	public void update() {
 		
 		if (keyH.upPressed == true) {
