@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import entity.Player;
+
 public class GamePanel extends JPanel implements Runnable{
 	
 	/* 
@@ -15,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	final int originalTileSize = 16; // 16x16 tile
 	final int scale = 3;
-	final int tileSize = originalTileSize * scale; // 48x48 tile
+	public final int tileSize = originalTileSize * scale; // 48x48 tile
 	final int maxScreenCol = 16; 
 	final int maxScreenRow = 12;
 	final int screenWidth = tileSize * maxScreenCol; // 768px
@@ -26,6 +28,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	KeyHandler keyH = new KeyHandler();
 	Thread gameThread;
+	Player player = new Player(this, keyH);
 	
 	// Set player's default position
 	int playerX = 100;
@@ -47,8 +50,11 @@ public class GamePanel extends JPanel implements Runnable{
 		gameThread.start();
 	}
 
-	
+	/*
+	 * CÁCH 1
+	 *
 //	public void run() {	
+
 //		double drawInterval = 1000000000/FPS; // 0.01666 seconds
 //		double nextDrawTime = System.nanoTime() + drawInterval;
 //		
@@ -80,16 +86,20 @@ public class GamePanel extends JPanel implements Runnable{
 //				e.printStackTrace();
 //			}
 //		}
-////		As long as this gameThread exits, 
-////		it repeats the process that is written inside of these brackets
+//		As long as this gameThread exits, 
+//		it repeats the process that is written inside of these brackets
 //	}
+ */
+	
+	/*
+	 * CÁCH 2
+	 */	
 	public void run() {
 		
 		double drawInterval = 1000000000/FPS;
 		double delta = 0;
 		long lastTime = System.nanoTime();
 		long currentTime;
-		
 		
 		long timer = 0;
 		int drawCount = 0;
@@ -119,6 +129,37 @@ public class GamePanel extends JPanel implements Runnable{
 //			System.out.println("delta :" + delta);
 		}
 	}
+		
+	/*
+	 * CÁCH 3
+	 *	
+//	public void run() {
+//		
+//		final int TARGET_FPS = 60;
+//		final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+//		long lastUpdateTime = System.nanoTime();
+//		long lastRenderTime = System.nanoTime();
+//
+//		while (gameThread != null) {
+//		    long now = System.nanoTime();
+//		    long updateLength = now - lastUpdateTime;
+//		    lastUpdateTime = now;
+//
+//		    long renderTime = System.nanoTime() - lastRenderTime;
+//		    lastRenderTime = System.nanoTime();
+//		    long sleepTime = (OPTIMAL_TIME - renderTime) / 1000000;
+//
+//		    if (sleepTime > 0) {
+//		        try {
+//					update();
+//					repaint();
+//		            Thread.sleep(sleepTime);
+//		        } catch (InterruptedException e) {
+//		            e.printStackTrace();
+//		        }
+//		    }
+//		}
+//	}
 	
 	/*
 	 * The purpose of this loop is to maintain a consistent frame rate (FPS) for the
@@ -132,18 +173,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public void update() {
 		
-		if (keyH.upPressed == true) {
-			playerY -= playerSpeed;
-		}
-		else if (keyH.downPressed == true) {
-			playerY += playerSpeed;
-		}
-		else if (keyH.leftPressed == true) {
-			playerX -= playerSpeed;
-		}
-		else if (keyH.rightPressed == true) {
-			playerX += playerSpeed;
-		}
+		player.update();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -152,9 +182,8 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		Graphics2D g2 = (Graphics2D)g; // We change this Graphics g to this Graphics2D
 		
-		g2.setColor(Color.white);
-		g2.fillRect(playerX, playerY, tileSize, tileSize);
-		// Draw a rectangle and fills it with the specified color
+		player.draw(g2);
+		
 		g2.dispose();
 		// Dispose of this graphics context and release any system resources that it's using
 	}
