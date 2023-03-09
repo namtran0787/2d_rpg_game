@@ -20,10 +20,10 @@ public class TileManager {
 		
 		this.gp = gp;
 		tile = new Tile[10];
-		mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];
+		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 		
 		getTileImage();
-		loadMap();
+		loadMap("/maps/world01.txt");
 	}
 	
 	public void getTileImage() {
@@ -39,24 +39,36 @@ public class TileManager {
 			tile[2] = new Tile();
 			tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water01.png"));
 			
+			tile[3] = new Tile();
+			tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
+			
+			tile[4] = new Tile();
+			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
+
+			tile[5] = new Tile();
+			tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	public void loadMap() {
+	
+	public void loadMap(String filePathMap) {
 		try {
-			InputStream is = getClass().getResourceAsStream("/maps/map01.txt");
+			InputStream is = getClass().getResourceAsStream(filePathMap);
+			// We are going to use lot of maps in project, so we should add parameter is filePath
+			// and assign it in above.
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			
 			int col = 0;
 			int row = 0;
 			
-			while (col < gp.maxScreenCol && row < gp.maxScreenRow) {
+			while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
 				
 				String line = br.readLine();
-				
-				while(col < gp.maxScreenCol) {
+//				System.out.println(line);
+				while(col < gp.maxWorldCol) {
 					
 					String numbers[] = line.split(" ");
 					
@@ -66,13 +78,12 @@ public class TileManager {
 					col++;
 				}
 					
-				if (col == gp.maxScreenCol) {
+				if (col == gp.maxWorldCol) {
 					col = 0;
 					row ++;
 				}
 			}
 			br.close();
-
 			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -102,6 +113,9 @@ public class TileManager {
 				y += gp.tileSize;
 			}
 		}
+		// we draw map by using while loop, because the max col of map is 16 tiles so if 
+		// it come maximum col of map, it will drop under with col = 0 and row++ ( it's mean
+		// + 48px per row.
 
 	}
 }
