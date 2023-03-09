@@ -3,6 +3,7 @@ package entity;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -33,8 +34,9 @@ public class Player extends Entity {
 	public void getPlayerImage() {
 		try {
 			
-			up1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_1.png"));
-			up2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_2.png"));
+			up1 = ImageIO.read(new File("E:\\Eclipse\\My2DGame\\res\\player\\boy_up_1.png"));
+			up2 = ImageIO.read(new File("E:\\Eclipse\\My2DGame\\res\\player\\boy_up_2.png"));
+			// We can using either two ways
 			down1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_1.png"));
 			down2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_2.png"));
 			left1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_1.png"));
