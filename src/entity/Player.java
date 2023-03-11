@@ -20,7 +20,6 @@ public class Player extends Entity {
 	public  int screenY;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
-		super();
 		this.gp = gp;
 		this.keyH = keyH;
 		

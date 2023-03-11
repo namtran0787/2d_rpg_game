@@ -74,7 +74,7 @@ public class TileManager {
 					
 					int num = Integer.parseInt(numbers[col]);
 					
-					mapTileNum[col][row] = num;
+					mapTileNum[col][row] = num; // NOTE: mapTileNum is using in draw method
 					col++;
 				}
 					
@@ -92,26 +92,36 @@ public class TileManager {
 	}
 	public void draw(Graphics2D g2) {
 		
-		int col = 0;
-		int row = 0;
-		int x = 0;
-		int y = 0;
+		int worldCol = 0;
+		int worldRow = 0;
+//		int x = 0;
+//		int y = 0;
 		
-		while(col < gp.maxScreenCol && row < gp.maxScreenRow) {
+		while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 			
-			int tileNum = mapTileNum[col][row];
+			int tileNum = mapTileNum[worldCol][worldRow];
 			
-			g2.drawImage(tile[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
-			
-			col++;
-			x += gp.tileSize;
-			
-			if(col == gp.maxScreenCol) {
-				col = 0;
-				x = 0;
-				row++;
-				y += gp.tileSize;
+			int worldX = worldCol * gp.tileSize;
+			int worldY = worldRow * gp.tileSize;
+			int screenX = worldX - gp.player.worldX + gp.player.screenX;
+			int screenY = worldY - gp.player.worldY + gp.player.screenY;
+		
+			if ( worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+				 worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+				 worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+				 worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) 
+			{
+				g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
 			}
+			// Draw specified tile in map more and more ...
+			
+			worldCol++;
+			
+			if(worldCol == gp.maxWorldCol) {
+				worldCol = 0;				
+				worldRow++;
+			} 
 		}
 		// we draw map by using while loop, because the max col of map is 16 tiles so if 
 		// it come maximum col of map, it will drop under with col = 0 and row++ ( it's mean
