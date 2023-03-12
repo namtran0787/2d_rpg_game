@@ -115,7 +115,6 @@ public class TileManager {
 				 worldMapY - gp.tileSize < gp.player.worldY + gp.player.screenY) 
 			{
 				g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-
 			}
 			// Draw specified tile in map more and more ...
 			
