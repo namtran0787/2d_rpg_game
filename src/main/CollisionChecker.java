@@ -63,6 +63,12 @@ public class CollisionChecker {
 			break;
 		}
 	}
+
+	/*
+	 * Method ở dưới sẽ trả về vị trí trong mảng obj[i] để lấy về object 
+	 * chỉ định đã được khởi tạo trong mảng, cụ thể là ở Class AssetSetter
+	 */
+	
 	public int checkObject(Entity entity, boolean player) {
 		
 		int index = 999;
